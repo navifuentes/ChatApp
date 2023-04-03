@@ -14,6 +14,7 @@ Swal.fire({
   allowOutsideClick: false, //impide que salga del Alert al dar "click" fuera de esta
 }).then((result) => {
   user = result.value;
+  socket.emit("newUserAutentication", result.value);
   //Una vez q se identifica, le asignamos la variable USER
 });
 
@@ -29,7 +30,7 @@ chatBox.addEventListener("keyup", (evt) => {
   }
 });
 
-//Recivir mensajes
+//Recibir mensajes
 socket.on("messageLogs", (data) => {
   //recibimos en DATA el array de msjs actualizados
   let logs = document.getElementById("messageLogs"); // Agarramos el elemento <p>
@@ -40,4 +41,13 @@ socket.on("messageLogs", (data) => {
     messages += `${message.user}: ${message.message} </br>`;
   });
   logs.innerHTML = messages;
+});
+
+socket.on("newUserSwal", (data) => {
+  Swal.fire({
+    text: `user: "${data}" has entered the chat!`,
+    toast: true,
+    position: "top-right",
+    timer: 4000,
+  });
 });
